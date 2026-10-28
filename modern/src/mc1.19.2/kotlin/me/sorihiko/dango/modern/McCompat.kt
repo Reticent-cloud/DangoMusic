@@ -43,6 +43,21 @@ internal object GlCache {
  * 所以在边界上做一次列主序的 float 拷贝互转。
  */
 internal object McCompat {
+    /**
+     * 主菜单上的「正在播放」浮层（1.6.0 新增）。
+     * 高版本由 GuiGraphics 直接交给 DangoClient 画；1.19.2 的主菜单渲染走
+     * ScreenEvent.Render.Post + PoseStack，没有 GuiGraphics，这里保持空实现，
+     * 1.19.2 的入口也不注册这段渲染 —— 其余功能不受影响。
+     */
+    fun mainMenuNowPlaying(graphics: Any) {}
+
+    /**
+     * 播放器在主菜单打开时的背景（原版全景 + 遮罩，1.6.0 新增）。
+     * 1.19.2 要自己用 PanoramaRenderer 和 Tesselator 重画，暂未移植；
+     * 返回 false 时 MusicScreen 会先铺一层纯色底，玻璃不会反复采样自身。
+     */
+    fun renderMenuBackdrop(parent: Screen?): Boolean = false
+
     /** 16 个 float 的临时缓冲（列主序）。com.mojang 那两个方法用的是绝对索引，拷完 position 要回 0 */
     private val matBuf = BufferUtils.createFloatBuffer(16)
 
