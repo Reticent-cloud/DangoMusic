@@ -65,7 +65,9 @@ object ModernPlatform : Platform {
 
     override val guiScale: Int get() = mc.window.guiScale.toInt()
 
-    override val fps: Int get() = mc.fps
+    // 1.20.1 起可以直接读 Minecraft#getFps()；1.19.2 没有（fps 是 private 字段），
+    // 由 McCompat 自己统计，见 src/mc<版本>/
+    override val fps: Int get() = McCompat.fps
 
     override val fov: Float get() = mc.options.fov().get().toFloat()
 

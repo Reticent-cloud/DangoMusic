@@ -90,6 +90,12 @@ subprojects {
         "shade"(kotlin("stdlib"))
         "shade"("javazoom:jlayer:1.0.1")
         "shade"("com.google.zxing:core:3.3.3")
+
+        // 1.19.3 起 Minecraft 才依赖 org.joml；共用代码（Fixed / Projection / 着色器）算矩阵用的就是它，
+        // 所以 1.19.2 得自己带一个，见下面 shadowJar 里的重定位
+        if (mcVersion == "1.19.2") {
+            "shade"("org.joml:joml:1.10.5")
+        }
     }
 
     tasks.named<ProcessResources>("processResources") {
@@ -114,6 +120,10 @@ subprojects {
         relocate("org.jetbrains.annotations", "me.sorihiko.dango.shadow.annotations.jetbrains")
         relocate("javazoom", "me.sorihiko.dango.shadow.javazoom")
         relocate("com.google.zxing", "me.sorihiko.dango.shadow.zxing")
+        // 1.19.2 的 joml 是我们自己打进来的（原版那个版本的游戏没有），一起重定位，避免和别的 mod 撞车
+        if (mcVersion == "1.19.2") {
+            relocate("org.joml", "me.sorihiko.dango.shadow.joml")
+        }
         exclude("module-info.class", "META-INF/versions/**", "META-INF/*.kotlin_module")
         // META-INF/versions 已经去掉了，就不能再声明 Multi-Release，
         // 否则 Forge 1.20.1 加载 jar 时找不到这个目录直接崩溃（Shadow 9 默认会加这一行）

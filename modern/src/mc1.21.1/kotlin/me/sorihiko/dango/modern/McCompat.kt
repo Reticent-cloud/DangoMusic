@@ -170,6 +170,9 @@ internal object McCompat {
     /** 能不能用 OpenGL 画（26.x 起可以选 Vulkan，那时我们画不了） */
     val glAvailable: Boolean get() = true
 
+    /** 帧率：这些版本的 Minecraft 自己有 getFps()（1.19.2 没有，见 src/mc1.19.2） */
+    val fps: Int get() = Minecraft.getInstance().fps
+
     /** 原版开始画界面之前（只有 26.x 用到） */
     fun beforeGui() {}
 
